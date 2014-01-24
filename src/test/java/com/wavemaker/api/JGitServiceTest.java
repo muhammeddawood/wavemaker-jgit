@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.wavemaker.jgit.api.JGitService;
+import com.wavemaker.jgit.api.RepositoryService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:applicationContext.xml"})
@@ -24,14 +24,14 @@ public class JGitServiceTest {
 	private final static String REMOTE_REPOSITORY = "https://github.com/Imaginea/thecodez.git";
 	
 	@Autowired
-	private JGitService jgitService;
+	private RepositoryService jgitService;
 	
 	@Test
-	public void testCloneRepository() throws IOException {
+	public void cloneRepository() throws IOException {
 		File file = File.createTempFile("TestJGit", null);
 		file.delete();
 		
-		jgitService.cloneRemoteRepository(REMOTE_REPOSITORY, file.getAbsolutePath());
+		jgitService.clone(REMOTE_REPOSITORY, file.getAbsolutePath());
 		
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
         
@@ -47,12 +47,12 @@ public class JGitServiceTest {
 	}
 	
 	@Test
-	public void testPullRemoteRepository() throws IOException {
+	public void pull() throws IOException {
 		File file = File.createTempFile("TestJGit", null);
 		file.delete();
 		
-		jgitService.cloneRemoteRepository(REMOTE_REPOSITORY, file.getAbsolutePath());
-		jgitService.pullFromRemoteRepository(REMOTE_REPOSITORY, file.getAbsolutePath());
+		jgitService.clone(REMOTE_REPOSITORY, file.getAbsolutePath());
+		jgitService.pull(REMOTE_REPOSITORY, file.getAbsolutePath());
 		
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
 		Repository repository = builder.setGitDir(file)
@@ -67,18 +67,20 @@ public class JGitServiceTest {
 	}
 	
 	@Test
-	public void testAddFilesAndCommit() throws IOException {
+	public void addAndCommit() throws IOException {
 		File gitDir = File.createTempFile("TestJGit", null);
 		gitDir.delete();
 		
-		jgitService.cloneRemoteRepository(REMOTE_REPOSITORY, gitDir.getAbsolutePath());
+		jgitService.clone(REMOTE_REPOSITORY, gitDir.getAbsolutePath());
 
 		// create the file
         createNewFile(gitDir, "testfile1", "content1");
         // create the file
         createNewFile(gitDir, "testfile2", "content2");
         
-        jgitService.addFilesAndCommit(gitDir.getAbsolutePath(), Arrays.asList("testfile1", "testfile2"), "First commit");
+        jgitService.add(gitDir.getAbsolutePath(), Arrays.asList("testfile1", "testfile2"));
+        
+        jgitService.commit(gitDir.getAbsolutePath(), "First Commit");
 		
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
 		Repository repository = builder.setGitDir(gitDir)

@@ -15,16 +15,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.wavemaker.jgit.api.JGitService;
+import com.wavemaker.jgit.api.RepositoryService;
 
 @Controller
 @RequestMapping("/jgit")
-public class JGitController {
+public class RepositoryController {
 
 	@Autowired
 	private ServletContext context;
 	@Autowired
-	private JGitService jgitService;
+	private RepositoryService repositoryService;
 	@Value("#{appProperties['app.folder']}")
 	private String appFolder;
 	
@@ -38,23 +38,29 @@ public class JGitController {
 	
 	@RequestMapping(value="/clone", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
-	public void cloneRemoteRepository(@RequestParam String url, @RequestParam String path) {
-		String realPath = appFolder + "/" + path;
-		jgitService.cloneRemoteRepository(url, realPath);
+	public void clone(@RequestParam String url, @RequestParam(value="dir") String repoDir) {
+		String realPath = appFolder + "/" + repoDir;
+		repositoryService.clone(url, realPath);
 	}
 	
 	@RequestMapping(value="/pull", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.OK)
-	public void pullFromRemoteRepository(@RequestParam String url, @RequestParam String path) {
-		String realPath = appFolder + "/" + path;
-		jgitService.pullFromRemoteRepository(url, realPath);
+	public void pull(@RequestParam String url, @RequestParam(value="dir") String repoDir) {
+		String realPath = appFolder + "/" + repoDir;
+		repositoryService.pull(url, realPath);
 	}
 	
-	@RequestMapping(value="/addAndCommit", method=RequestMethod.POST)
+	@RequestMapping(value="/add", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
-	public void addFilesAndCommit(@RequestParam String path, @RequestParam List<String> files,
-			@RequestParam String message) {
-		String realPath = appFolder + "/" + path;
-		jgitService.addFilesAndCommit(realPath, files, message);
+	public void add(@RequestParam(value="dir") String repoDir, @RequestParam List<String> files) {
+		String realPath = appFolder + "/" + repoDir;
+		repositoryService.add(realPath, files);
+	}
+	
+	@RequestMapping(value="/commit", method=RequestMethod.POST)
+	@ResponseStatus(HttpStatus.OK)
+	public void add(@RequestParam(value="dir") String repoDir, @RequestParam String message) {
+		String realPath = appFolder + "/" + repoDir;
+		repositoryService.commit(realPath, message);
 	}
 }

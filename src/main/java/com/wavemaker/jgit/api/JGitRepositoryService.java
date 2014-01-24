@@ -14,12 +14,12 @@ import org.springframework.stereotype.Service;
 import com.wavemaker.jgit.exception.JGitAPIException;
 
 @Service
-public class JGitServiceImpl implements JGitService {
+public class JGitRepositoryService implements RepositoryService {
 
 	@Override
-	public void cloneRemoteRepository(String url, String local) {
+	public void clone(String url, String repoDir) {
 		try {
-			File file = new File(local);
+			File file = new File(repoDir);
 			Git.cloneRepository().setURI(url).setDirectory(file).call();
 		} catch (GitAPIException e) {
 			throw new JGitAPIException(e);
@@ -27,11 +27,11 @@ public class JGitServiceImpl implements JGitService {
 	}
 
 	@Override
-	public void pullFromRemoteRepository(String url, String local) {
+	public void pull(String url, String repoDir) {
 		Repository repository = null;
 		try {
-			local = local + "/.git";
-			repository = openRepository(local);
+			repoDir = repoDir + "/.git";
+			repository = openRepository(repoDir);
 			
 			Git git = new Git(repository);
 			git.pull().call();
@@ -46,11 +46,10 @@ public class JGitServiceImpl implements JGitService {
 	}
 
 	@Override
-	public void addFilesAndCommit(String localRepo, List<String> files, String message) {
+	public void add(String repoDir, List<String> files) {
 		Repository repo = null;
 		try {
-			repo = openRepository(localRepo);
-
+			repo = openRepository(repoDir);
 			Git git = new Git(repo);
 
 			AddCommand add = git.add();
@@ -60,6 +59,22 @@ public class JGitServiceImpl implements JGitService {
 
 			// run the add-call
 			add.call();
+			repo.close();
+		} catch (IOException | GitAPIException e) {
+			throw new JGitAPIException(e);
+		} finally {
+			if(repo != null) {
+				repo.close();
+			}
+		}
+	}
+	
+	@Override
+	public void commit(String repoDir, String message) {
+		Repository repo = null;
+		try {
+			repo = openRepository(repoDir);
+			Git git = new Git(repo);
 			git.commit().setMessage(message).call();
 			repo.close();
 		} catch (IOException | GitAPIException e) {
@@ -71,8 +86,8 @@ public class JGitServiceImpl implements JGitService {
 		}
 	}
 	
-	private Repository openRepository(String local) throws IOException {
-		File file = new File(local);
+	private Repository openRepository(String dir) throws IOException {
+		File file = new File(dir);
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
 		Repository repository = builder.readEnvironment() 
 				.findGitDir(file) // scan up the file system tree
