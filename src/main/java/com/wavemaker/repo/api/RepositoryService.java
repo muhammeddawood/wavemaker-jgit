@@ -1,4 +1,4 @@
-package com.wavemaker.jgit.api;
+package com.wavemaker.repo.api;
 
 import java.util.List;
 

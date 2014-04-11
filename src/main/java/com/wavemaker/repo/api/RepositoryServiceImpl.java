@@ -1,4 +1,4 @@
-package com.wavemaker.jgit.api;
+package com.wavemaker.repo.api;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,10 +11,10 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.springframework.stereotype.Service;
 
-import com.wavemaker.jgit.exception.JGitAPIException;
+import com.wavemaker.repo.exception.RepositoryException;
 
 @Service
-public class JGitRepositoryService implements RepositoryService {
+public class RepositoryServiceImpl implements RepositoryService {
 
 	@Override
 	public void clone(String url, String repoDir) {
@@ -22,7 +22,7 @@ public class JGitRepositoryService implements RepositoryService {
 			File file = new File(repoDir);
 			Git.cloneRepository().setURI(url).setDirectory(file).call();
 		} catch (GitAPIException e) {
-			throw new JGitAPIException(e);
+			throw new RepositoryException(e);
 		}
 	}
 
@@ -37,7 +37,7 @@ public class JGitRepositoryService implements RepositoryService {
 			git.pull().call();
 			repository.close();
 		} catch (GitAPIException | IOException e) {
-			throw new JGitAPIException(e);
+			throw new RepositoryException(e);
 		} finally {
 			if(repository != null) {
 				repository.close();
@@ -61,7 +61,7 @@ public class JGitRepositoryService implements RepositoryService {
 			add.call();
 			repo.close();
 		} catch (IOException | GitAPIException e) {
-			throw new JGitAPIException(e);
+			throw new RepositoryException(e);
 		} finally {
 			if(repo != null) {
 				repo.close();
@@ -78,7 +78,7 @@ public class JGitRepositoryService implements RepositoryService {
 			git.commit().setMessage(message).call();
 			repo.close();
 		} catch (IOException | GitAPIException e) {
-			throw new JGitAPIException(e);
+			throw new RepositoryException(e);
 		} finally {
 			if(repo != null) {
 				repo.close();

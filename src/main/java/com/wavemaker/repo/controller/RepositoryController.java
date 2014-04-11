@@ -1,4 +1,4 @@
-package com.wavemaker.jgit.controller;
+package com.wavemaker.repo.controller;
 
 import java.io.File;
 import java.util.List;
@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.wavemaker.jgit.api.RepositoryService;
+import com.wavemaker.repo.api.RepositoryService;
 
 @Controller
-@RequestMapping("/jgit")
+@RequestMapping("/vc")
 public class RepositoryController {
 
 	@Autowired
