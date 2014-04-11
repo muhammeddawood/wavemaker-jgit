@@ -3,7 +3,6 @@ package com.wavemaker.api;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.lib.Repository;
@@ -78,7 +77,7 @@ public class RepositoryServiceTest {
         // create the file
         createNewFile(gitDir, "testfile2", "content2");
         
-        repoService.add(gitDir.getAbsolutePath(), Arrays.asList("testfile1", "testfile2"));
+        repoService.track(gitDir.getAbsolutePath(), "testfile1", "testfile2");
         
         repoService.commit(gitDir.getAbsolutePath(), "First Commit");
 		

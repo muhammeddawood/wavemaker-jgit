@@ -2,7 +2,6 @@ package com.wavemaker.repo.api;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.Git;
@@ -46,7 +45,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 	}
 
 	@Override
-	public void add(String repoDir, List<String> files) {
+	public void track(String repoDir, String... files) {
 		Repository repo = null;
 		try {
 			repo = openRepository(repoDir);
@@ -95,4 +94,15 @@ public class RepositoryServiceImpl implements RepositoryService {
 		
 		return repository;
 	}
+
+	@Override
+	public void untrack(String repoDir, String... file) {
+		
+	}
+
+	@Override
+	public void revert(String repoDir) {
+		
+	}
+
 }

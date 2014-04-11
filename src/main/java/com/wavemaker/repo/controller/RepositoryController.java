@@ -1,7 +1,6 @@
 package com.wavemaker.repo.controller;
 
 import java.io.File;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
@@ -50,11 +49,11 @@ public class RepositoryController {
 		repositoryService.pull(url, realPath);
 	}
 	
-	@RequestMapping(value="/add", method=RequestMethod.POST)
+	@RequestMapping(value="/track", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
-	public void add(@RequestParam(value="dir") String repoDir, @RequestParam List<String> files) {
+	public void add(@RequestParam(value="dir") String repoDir, @RequestParam String[] files) {
 		String realPath = appFolder + "/" + repoDir;
-		repositoryService.add(realPath, files);
+		repositoryService.track(realPath, files);
 	}
 	
 	@RequestMapping(value="/commit", method=RequestMethod.POST)
