@@ -77,7 +77,10 @@ public class RepositoryServiceTest {
         // create the file
         createNewFile(gitDir, "testfile2", "content2");
         
-        repoService.track(gitDir.getAbsolutePath(), "testfile1", "testfile2");
+        File file = new File("Gemfile");
+        file.renameTo(new File("Gemfile2"));
+        
+        repoService.add(gitDir.getAbsolutePath(), "testfile1", "testfile2", "Gemfile2", "config.ru");
         
         repoService.commit(gitDir.getAbsolutePath(), "First Commit");
 		

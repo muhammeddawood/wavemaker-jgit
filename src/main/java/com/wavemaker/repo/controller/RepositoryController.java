@@ -53,7 +53,7 @@ public class RepositoryController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public void add(@RequestParam(value="dir") String repoDir, @RequestParam String[] files) {
 		String realPath = appFolder + "/" + repoDir;
-		repositoryService.track(realPath, files);
+		repositoryService.add(realPath, files);
 	}
 	
 	@RequestMapping(value="/commit", method=RequestMethod.POST)

@@ -16,9 +16,9 @@ import com.wavemaker.repo.exception.RepositoryException;
 public class RepositoryServiceImpl implements RepositoryService {
 
 	@Override
-	public void clone(String url, String repoDir) {
+	public void clone(String url, String repo) {
 		try {
-			File file = new File(repoDir);
+			File file = new File(repo);
 			Git.cloneRepository().setURI(url).setDirectory(file).call();
 		} catch (GitAPIException e) {
 			throw new RepositoryException(e);
@@ -26,11 +26,11 @@ public class RepositoryServiceImpl implements RepositoryService {
 	}
 
 	@Override
-	public void pull(String url, String repoDir) {
+	public void pull(String url, String repo) {
 		Repository repository = null;
 		try {
-			repoDir = repoDir + "/.git";
-			repository = openRepository(repoDir);
+			repo = repo + "/.git";
+			repository = openRepository(repo);
 			
 			Git git = new Git(repository);
 			git.pull().call();
@@ -45,12 +45,12 @@ public class RepositoryServiceImpl implements RepositoryService {
 	}
 
 	@Override
-	public void track(String repoDir, String... files) {
+	public void add(String repoDir, String... files) {
 		Repository repo = null;
 		try {
 			repo = openRepository(repoDir);
 			Git git = new Git(repo);
-
+			
 			AddCommand add = git.add();
 			for(String file : files) {
 				add.addFilepattern(file);
@@ -96,12 +96,22 @@ public class RepositoryServiceImpl implements RepositoryService {
 	}
 
 	@Override
-	public void untrack(String repoDir, String... file) {
+	public void remove(String repo, String... file) {
 		
 	}
 
 	@Override
-	public void revert(String repoDir) {
+	public void revert(String repo) {
+		
+	}
+
+	@Override
+	public void move(String repo, String fromFile, String toFile) {
+		
+	}
+
+	@Override
+	public void init(String repo) {
 		
 	}
 
